@@ -36,3 +36,50 @@ As part of this, I predominantly tried to use what I had on hand, so these are b
 - 
 
 Full write up when I finish testing the setup
+
+
+ffmpeg stream copy stuff from [here](https://riderjensen.com/blog/streaming-mp4-to-twitch)
+
+ffmpeg -re  -i  "video.mp4" \ 
+-ar 44100 \
+-acodec copy \
+-vcodec copy \
+-f flv \
+-flvflags no_duration_filesize \
+rtmp://sea02.contribute.live-video.net/app/{stream_key}`
+
+From a live device, remove the -re
+
+a dietpi stream tutorial is [here](https://www.phazertech.com/tutorials/rtsp.html) so we can have a less heavy operating system
+
+ffmpeg also has a guide on setting up streaming commands [here](https://trac.ffmpeg.org/wiki/StreamingGuide)
+
+and then we have input mapping switching (for multiple cameras) discussed [here](https://stackoverflow.com/questions/61320648/ffmpeg-switch-inputs-mapping-on-the-fly-while-recording)
+
+[ffmpeg with alsa for audio](https://blog.za3k.com/streaming-linux-twitch-using-ffmpeg-and-alsa/)
+
+[ffmpeg more multi inputs](https://stackoverflow.com/questions/42737129/change-ffmpeg-input-on-the-fly)
+
+[ffmpeg latency tweaks](https://stackoverflow.com/questions/16658873/how-to-minimize-the-delay-in-a-live-streaming-with-ffmpeg/49273163#49273163)
+
+[ffmpeg with ffplay](https://morrillplou.me/blog/posts/streaming-video-over-lan-with-ffmpeg/)
+
+[ffmpeg runtime filter commands](https://www.reddit.com/r/ffmpeg/comments/gbow93/is_it_possible_to_inject_a_new_vf_during_a_stream/)
+
+I started trying to look up how I could swap between the camera and microscope feeds on a running stream with ffmpeg, and I was expecting to do some sort of fancy button press setup, so i found a filter to allow to programmatically switch inputs, but then I was trying to see how to get it to register some external command while live, but I found a different filter that detects black frames, so I could.... just make it switch cameras when it reads a black frame from the current feed lol. [black frame filter](https://ffmpeg.org/ffmpeg-filters.html#toc-blackframe) and [stream select filter](https://ayosec.github.io/ffmpeg-filters-docs/8.0/Filters/Video/streamselect.html)
+
+okay, blackframes is actually no good, apparently. but there's some other options [here](https://stackoverflow.com/questions/73251603/fallback-input-when-blackscreen-ffmpeg)
+
+maybe correct? (but this means we're not copying the stream, but we should look at just copying at least the audio, or maybe the unmodified?)
+ffmpeg -i <<cam_id>> -f lavfi -i <<scope_id>> -filter_complex "[1:v][0:v]scale2ref[v1][v0];[v0]format=gray,geq=lum_expr='lt(p(X,Y), 5)',geq='gt(lumsum(W-1,H-1),0.4*W*H)*255'[alpha];[v1][alpha]alphamerge[alpha_v1];[0:v][alpha_v1]overlay=shortest=1[v]" -map "[v]" -map 0:a -c:v libx264 -pix_fmt yuv420p -c:a aac -strict -2 -f flv <<RTMP_URL>>
+
+
+maybe that wont work? answer hazy, but [here's](https://stackoverflow.com/questions/66082119/switch-video-from-webcam-while-stream-live) a different switch method using overlays
+
+using some of the above pieces, we can also have an initial stream, which then streams to both twitch and vlc or something so we can also see what the hell we're doing lolol
+
+
+then we also have a [transparent twitch chat overlay](https://github.com/baffler/Transparent-Twitch-Chat-Overlay)
+
+
+[TESTING FFMPEG FILTER COMMANDS](https://ffmpeg.lav.io/)
