@@ -5,6 +5,7 @@ import time
 import RPi.GPIO as GPIO
 import board
 import neopixel
+import cv2
 
 # Neopixel ring I had on hand, so neopixels setup using: https://learn.adafruit.com/neopixels-on-raspberry-pi/python-usage
 pixels = neopixel.NeoPixel(board.D14, 24)
@@ -53,6 +54,18 @@ GPIO.setup(btn_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 stream_cmd = 'avconv -re -ar 44100 -ac 2 -acodec pcm_s16le -f s16le -ac 2 -i ' + camera_name + ' -f ' + camera_format + ' -i - -vcodec copy -acodec aac -ab 128k -g 50 -strict experimental -f flv ' + TWITCH + KEY 
 stream_pipe = subprocess.Popen(stream_cmd, shell=True, stdin=subprocess.PIPE) 
 ### Camera connection
+cam = cv2.VideoCapture(0)
+mscope = cv2.VideoCapture(1)
+
+while True:
+	ret, image = cam.read()
+	cv2.imshow('Imagetest',image)
+	k = cv2.waitKey(1)
+	if k != -1:
+		break
+cv2.imwrite('/home/pi/testimage.jpg', image)
+cam.release()
+cv2.destroyAllWindows()
 camera = picamera.PiCamera(resolution=resolution, framerate=framerate) 
 #microscope = picamera.PiCamera()
 
