@@ -93,3 +93,4 @@ twitch chat:
 
 for more programmatic, we have [twitch chat irc](https://pypi.org/project/twitch-chat-irc/)
 
+FUCK MAKING MY OWN, I FOUND THIS LET'S GOOOOO: https://github.com/martinbjeldbak/twitch-chat-cli/releases
