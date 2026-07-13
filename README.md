@@ -83,3 +83,13 @@ then we also have a [transparent twitch chat overlay](https://github.com/baffler
 
 
 [TESTING FFMPEG FILTER COMMANDS](https://ffmpeg.lav.io/)
+
+I set up the complex stream script to hopefully also pipe the video to ffplay at the same time? [multip outputs](https://trac.ffmpeg.org/wiki/Creating%20multiple%20outputs) and [output to ffplay](https://www.reddit.com/r/ffmpeg/comments/y65z7w/output_to_ffplay/)
+
+Hopefully that takes care of all the ffmpeg commands!
+
+twitch chat:
+[overlay for linux](https://github.com/hperrin/stream-overlay)
+
+for more programmatic, we have [twitch chat irc](https://pypi.org/project/twitch-chat-irc/)
+
