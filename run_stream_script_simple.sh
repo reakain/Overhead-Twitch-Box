@@ -3,7 +3,7 @@ ffmpeg -i  "/dev/video2" \
 -framerate 30 \
 -video_size 640x480 \
 -c:v libx264 \
--present veryfast \
+-preset veryfast \
 -c:a aac \
 -ar 44100 \
 -tune zerolatency \
