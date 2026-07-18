@@ -15,6 +15,9 @@ microscope_source = '/dev/video2'
 twitch_out = 'pipe:1|rtmp://ingest.global-contribute.live-video.net/app/$TWITCHKEY'
 channel_id = 'reakain'
 text_timeout = 30
+
+font_file = 'comic-mono.ttf'
+font_size = 24
 #########################
 
 
@@ -47,7 +50,7 @@ def draw_overlay(formatted_text):
     draw = ImageDraw.Draw(image)
 
     # Define the text properties
-    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 36)
+    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
     text_color = (255, 255, 255)
 
     # Calculate the position to center the text
@@ -69,7 +72,7 @@ def update_text_overlay(new_msg):
     print(new_msg)
 
 #on exit:
-def on_exit:
+def on_exit():
     connection.close()
 
 connection = twitch_chat_irc.TwitchChatIRC()
