@@ -12,7 +12,7 @@ import os
 ##### Config pieces #####
 camera_source = '/dev/video0'
 microscope_source = '/dev/video2'
-twitch_out = 'pipe:1|rtmp://ingest.global-contribute.live-video.net/app/$TWITCHKEY'
+twitch_out = 'rtmp://ingest.global-contribute.live-video.net/app/'
 channel_id = 'reakain'
 text_timeout = 30
 
@@ -20,8 +20,8 @@ font_file = 'comic-mono.ttf'
 font_size = 24
 #########################
 
-
-
+twitchk = os.getenv('TWITCHKEY')
+out_stream = 'pipe:1|'+twitch_out+twitchk
 
 # get some video info:
 probe = ffmpeg.probe(camera_source)
@@ -110,9 +110,9 @@ v0_1 = ffmpeg.filter([in_scope.video,alpha_v1],'overlay')
 
 #instead of overlay, we can just draw text with the drawtext command? but unsure about how we update the text.... i guess we can use a textfile instead. oh! we use a pipe in to pipe each frame! then use that as the overlay? (use the numpy processing example, could use pygame or something to make the text frames if we want)
 # v3 = in_cam.video.drawtext(text='twitch chat here', x=width-(width/3), y=0, fix_bounds=True)
-v01_text = ffmpeg.filter([v0_1,msg_frame]'overlay')
+v01_text = ffmpeg.filter([v0_1,msg_frame],'overlay')
 
-stream = ffmpeg.output(in_audio, v01_text,twitch_out)
+stream = ffmpeg.output(in_audio, v01_text,out_stream)
 ffmpeg.run_async()
 
 #now that the stream is theoretically outputting to both pipe and twitch, let's kick off ffplay
