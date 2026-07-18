@@ -32,7 +32,7 @@ height = int(video_stream['height'])
 # setup our message screen
 msg_list = ['']
 msg_frame = "current_frame.png"
-temp_img = Image.new('RGBA',(width/3, height/2), (0,0,0,0))
+temp_img = Image.new('RGBA',(int(width/3), int(height/2)), (0,0,0,0))
 temp_img.save(msg_frame, "PNG")
 
 
@@ -44,7 +44,7 @@ temp_img.save(msg_frame, "PNG")
 
 #### Twitch Chat Handling
 def draw_overlay(formatted_text):
-    image = Image.new('RGBA',(width/3, height/2), (0,0,0,0))
+    image = Image.new('RGBA',(int(width/3), int(height/2)), (0,0,0,0))
 
     # Create a drawing context
     draw = ImageDraw.Draw(image)
