@@ -113,7 +113,7 @@ v0_1 = ffmpeg.filter([in_scope.video,alpha_v1],'overlay')
 v01_text = ffmpeg.overlay(v0_1,ffmpeg.input(msg_frame))
 
 stream = ffmpeg.output(in_audio, v01_text,out_stream)
-ffmpeg.run_async()
+ffmpeg.run_async(stream)
 
 #now that the stream is theoretically outputting to both pipe and twitch, let's kick off ffplay
 play_proc = subprocess.Popen(['ffplay', 'PATH_TO_'],
