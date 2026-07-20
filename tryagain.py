@@ -21,8 +21,8 @@ font_size = 24
 #########################
 
 twitchk = os.getenv('TWITCHKEY')
-out_stream = 'pipe:1|'+twitch_out+twitchk
-
+out_stream = twitch_out+twitchk
+pipe_out = 'pipe:1'
 # get some video info:
 probe = ffmpeg.probe(camera_source)
 video_stream = next((stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
@@ -112,14 +112,17 @@ v0_1 = ffmpeg.filter([in_scope.video,alpha_v1],'overlay')
 # v3 = in_cam.video.drawtext(text='twitch chat here', x=width-(width/3), y=0, fix_bounds=True)
 v01_text = ffmpeg.overlay(v0_1,ffmpeg.input(msg_frame))
 
-stream = ffmpeg.output(in_audio, v01_text,out_stream)
-ffmpeg.run_async(stream)
+#stream = ffmpeg.output(in_audio, v01_text,out_stream)
+stream = ffmpeg.output(v01_text,out_stream)
+#ffmpeg.run_async(stream, pipe_stdout=True)
+
+ffmpeg.view(stream)
 
 #now that the stream is theoretically outputting to both pipe and twitch, let's kick off ffplay
-play_proc = subprocess.Popen(['ffplay', 'PATH_TO_'],
-                        stdin=subprocess.PIPE,
-                        stdout=subprocess.PIPE,
-                        )
+# play_proc = subprocess.Popen(['ffplay', 'PATH_TO_'],
+#                         stdin=subprocess.PIPE,
+#                         stdout=subprocess.PIPE,
+#                         )
 
 # create an overlay on a video with ffmpeg (for doing some twitch chat bits)
 # fout = 'output.mp4'
