@@ -13,8 +13,8 @@ import board
 import neopixel
 
 ##### Config pieces #####
-camera_source = '/dev/video2'
-microscope_source = '/dev/video0'
+camera_source = '/dev/video0'
+microscope_source = '/dev/video2'
 twitch_out = 'rtmp://ingest.global-contribute.live-video.net/app/'
 channel_id = 'reakain'
 text_timeout = 30
