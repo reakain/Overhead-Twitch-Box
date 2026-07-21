@@ -67,7 +67,7 @@ def draw_overlay(message_info):
 
     # Define the text properties
     font = ImageFont.truetype(font_file, font_size)
-    text_color = (255, 255, 255)
+    text_color = (255, 255, 255, 255)
 
     # Calculate the position to center the text
     #message_info['display-name']
