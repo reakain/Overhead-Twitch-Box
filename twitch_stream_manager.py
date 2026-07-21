@@ -3,7 +3,7 @@
 # 2. Connects to chat to display messages during stream
 # 3. Handles turning on/off the ring light and listens for button to start/stop the stream
 
-from twitch_chat_irc import twitch_chat_irc
+import twitch_chat_irc
 
 def update_text_overlay(message):
     # TODO: update our list of on-screen messages
