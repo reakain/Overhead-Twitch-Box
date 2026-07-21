@@ -14,7 +14,7 @@ import neopixel
 
 ##### Config pieces #####
 camera_source = '/dev/video0'
-cam_mic = 'sysdefault:CARD=U0x46d0x825'
+cam_mic = 'plughw:CARD=U0x46d0x825,DEV=0'
 microscope_source = '/dev/video2'
 twitch_out = 'rtmp://ingest.global-contribute.live-video.net/app/'
 channel_id = 'reakain'
