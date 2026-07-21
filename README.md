@@ -94,3 +94,9 @@ twitch chat:
 for more programmatic, we have [twitch chat irc](https://pypi.org/project/twitch-chat-irc/)
 
 FUCK MAKING MY OWN, I FOUND THIS LET'S GOOOOO: https://github.com/martinbjeldbak/twitch-chat-cli/releases
+
+
+
+Comic Mono font from [here](https://dtinth.github.io/comic-mono-font/)
+
+Text wrapping from [here](https://gist.github.com/josephkern/69591e9bc1d2e07a46d35d2a3ab66542)

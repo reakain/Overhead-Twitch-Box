@@ -11,6 +11,7 @@ import os
 import RPi.GPIO as GPIO
 import board
 import neopixel
+import textwrap
 
 ##### Config pieces #####
 camera_source = '/dev/video0'
@@ -68,18 +69,22 @@ def draw_overlay(message_info):
     # Calculate the position to center the text
     #message_info['display-name']
     #textwrap.fill(message_info['message'],)
-    full_msg = message_info['display-name'] + ': ' + message_info['message']
+    offset_n = len(message_info['display-name']) + 2
+    offset_str = ' ' * offset_n
+    full_msg = offset_str + message_info['message']
+    wrapped_msg = textwrap.fill(full_msg, width=40)
+
     text_length = draw.textlength(full_msg, font)
-    x = (image.width - text_length) / 2
-    y = image.height / 2
+    #x = (image.width - text_length) / 2
+    x = 10
+    y = int(image.height / 3)
     msg_list.append(message_info)
 
     draw.text((x,y), message_info['display-name'] + ': ', fill=message_info['color'], font=font)
 
-    offset_n = len(message_info['display-name']) + 2
-    offset_str = ' ' * offset_n
+    
     # Add text to the image
-    draw.text((x, y), offset_str + message_info['message'], fill=text_color, font=font)
+    draw.text((x, y), wrapped_msg, fill=text_color, font=font)
 
     image.save("new_frame.png", "PNG")
     #atomic replacement
