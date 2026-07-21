@@ -66,7 +66,7 @@ def draw_overlay(formatted_text):
     draw = ImageDraw.Draw(image)
 
     # Define the text properties
-    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
+    font = ImageFont.truetype(font_file, font_size)
     text_color = (255, 255, 255)
 
     # Calculate the position to center the text
