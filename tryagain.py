@@ -114,7 +114,7 @@ v01_text = ffmpeg.overlay(v0_1,ffmpeg.input(msg_frame))
 
 #stream = ffmpeg.output(in_audio, v01_text,out_stream)
 stream = ffmpeg.output(v01_text,out_stream, format='flv', flvflags='no_duration_filesize',vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000)
-ffmpeg.run_async(stream, pipe_stdout=True)
+twitches = ffmpeg.run_async(stream, pipe_stdout=True)
 
 #ffmpeg.view(stream)
 
@@ -132,6 +132,7 @@ play_proc = subprocess.Popen(['ffplay', 'PATH_TO_'],
 #     .output(fout)
 #     .run()
 # )
+twitches.wait()
 
 
 
