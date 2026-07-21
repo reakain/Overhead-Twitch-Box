@@ -16,7 +16,7 @@ import neopixel
 camera_source = '/dev/video2'
 microscope_source = '/dev/video0'
 twitch_out = 'rtmp://ingest.global-contribute.live-video.net/app/'
-channel_id = 'grumlarkin'
+channel_id = 'reakain'
 text_timeout = 30
 
 font_file = 'comic-mono.ttf'
@@ -78,19 +78,16 @@ def draw_overlay(formatted_text):
     #atomic replacement
     os.replace("new_frame.png",msg_frame)
 
-def update_text_overlay(new_msg):
+def update_text_overlay(message):
     # TODO: update our list of on-screen messages
     # Then we call the command to remake our overlay text
-    draw_overlay(new_msg)
-    print(new_msg)
+    draw_overlay(message)
+    print(message)
 
 #on exit:
 def on_exit():
     connection.close()
     pixels.fill((0, 0, 0))
-
-connection = twitch_chat_irc.TwitchChatIRC()
-connection.listen(channel_id, on_message=update_text_overlay)
 
 ################
 
@@ -146,7 +143,9 @@ play_proc = subprocess.Popen(['ffplay', 'pipe:0'],
 #     .output(fout)
 #     .run()
 # )
-twitches.wait(1000)
+#twitches.wait(1000)
+connection = twitch_chat_irc.TwitchChatIRC()
+connection.listen(channel_id, on_message=update_text_overlay)
 pixels.fill((0, 0, 0))
 
 
