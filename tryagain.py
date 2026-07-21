@@ -10,8 +10,8 @@ from PIL import Image, ImageDraw, ImageFont
 import os
 
 ##### Config pieces #####
-camera_source = '/dev/video0'
-microscope_source = '/dev/video2'
+camera_source = '/dev/video2'
+microscope_source = '/dev/video0'
 twitch_out = 'rtmp://ingest.global-contribute.live-video.net/app/'
 channel_id = 'reakain'
 text_timeout = 30
@@ -113,7 +113,7 @@ v0_1 = ffmpeg.filter([in_scope.video,alpha_v1],'overlay')
 v01_text = ffmpeg.overlay(v0_1,ffmpeg.input(msg_frame))
 
 #stream = ffmpeg.output(in_audio, v01_text,out_stream)
-stream = ffmpeg.output(v01_text,out_stream, format='flv', vcodec='libx264', preset='veryfast')
+stream = ffmpeg.output(v01_text,out_stream, format='flv', flvflags='no_duration_filesize',vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000)
 ffmpeg.run_async(stream, pipe_stdout=True)
 
 #ffmpeg.view(stream)
