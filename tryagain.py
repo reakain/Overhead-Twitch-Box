@@ -48,8 +48,9 @@ height = 480
 # setup our message screen
 msg_list = ['']
 msg_frame = "current_frame.png"
-temp_img = Image.new('RGBA',(int(width/3), int(height/2)), (0,0,0,0))
-temp_img.save(msg_frame, "PNG")
+# temp_img = Image.new('RGBA',(int(width/3), int(height/2)), (0,0,0,0))
+# temp_img.save(msg_frame, "PNG")
+draw_overlay({'message':'testing'})
 
 
 
@@ -81,7 +82,7 @@ def draw_overlay(message_info):
 
     image.save("new_frame.png", "PNG")
     #atomic replacement
-    #os.replace("new_frame.png",msg_frame)
+    os.replace("new_frame.png",msg_frame)
 
 def update_text_overlay(message):
     # TODO: update our list of on-screen messages
