@@ -2,7 +2,7 @@
 import ffmpeg
 # use ffmpeg python: https://github.com/kkroening/ffmpeg-python
 import subprocess
-import twitch_chat_irc
+from twitch_chat_irc import twitch_chat_irc
 # twitch irc bits: https://pastebin.com/F0QKdZeB
 # and here: https://github.com/xenova/twitch-chat-irc
 from PIL import Image, ImageDraw, ImageFont
