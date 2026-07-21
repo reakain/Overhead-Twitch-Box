@@ -150,7 +150,7 @@ image_in = ffmpeg.input(msg_frame, f='image2', pattern_type = 'none', loop=1)
 #vid_set = ffmpeg.filter_(in_cam.video,'setpts','PTS-STARTPTS')
 #v01_text = ffmpeg.overlay(vid_set,img_set)
 v01_text = ffmpeg.overlay(in_cam.video,image_in.video).split()
-stdout_stream = ffmpeg.output(v01_text[0],'udp://127.0.0.1:5000')
+stdout_stream = ffmpeg.output(v01_text[0],'udp://127.0.0.1:5000', format='flv', flvflags='no_duration_filesize',vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p')
 
 #stream = ffmpeg.output(in_audio, v01_text,out_stream)
 stream = ffmpeg.output(in_audio, v01_text[1],out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p')
