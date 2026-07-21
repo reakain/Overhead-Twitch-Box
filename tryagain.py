@@ -38,10 +38,12 @@ twitchk = os.getenv('TWITCHKEY')
 out_stream = twitch_out+twitchk
 pipe_out = 'pipe:1'
 # get some video info:
-probe = ffmpeg.probe(camera_source)
-video_stream = next((stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
-width = int(video_stream['width'])
-height = int(video_stream['height'])
+# probe = ffmpeg.probe(camera_source)
+# video_stream = next((stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
+# width = int(video_stream['width'])
+# height = int(video_stream['height'])
+width = 640
+height = 480
 
 # setup our message screen
 msg_list = ['']
