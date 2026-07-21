@@ -11,7 +11,6 @@ import os
 import RPi.GPIO as GPIO
 import board
 import neopixel
-import textwrap
 
 ##### Config pieces #####
 camera_source = '/dev/video0'
