@@ -94,9 +94,9 @@ def update_text_overlay(message):
     # TODO: update our list of on-screen messages
     # Then we call the command to remake our overlay text
     draw_overlay(message)
-    new_msg = message['display-name'] + message['message']
-    print(new_msg)
-    print(message)
+    #new_msg = message['display-name'] + message['message']
+    #print(new_msg)
+    #print(message)
 
 #on exit:
 def on_exit():
@@ -158,10 +158,10 @@ twitches = ffmpeg.run_async(stream, pipe_stdout=True)
 #ffmpeg.view(stream)
 
 #now that the stream is theoretically outputting to both pipe and twitch, let's kick off ffplay
-play_proc = subprocess.Popen(['ffplay', '-i', 'pipe:0'],
-                        stdin=subprocess.PIPE,
-                        stdout=subprocess.PIPE,
-                        )
+# play_proc = subprocess.Popen(['ffplay', '-i', 'pipe:0'],
+#                         stdin=subprocess.PIPE,
+#                         stdout=subprocess.PIPE,
+#                         )
 
 # create an overlay on a video with ffmpeg (for doing some twitch chat bits)
 # fout = 'output.mp4'
