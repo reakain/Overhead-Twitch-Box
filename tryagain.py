@@ -90,7 +90,7 @@ def update_text_overlay(message):
 #on exit:
 def on_exit():
     connection.close()
-    pixels.fill((0, 0, 0))
+    #pixels.fill((0, 0, 0))
 
 ################
 
