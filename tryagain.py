@@ -14,6 +14,7 @@ import neopixel
 
 ##### Config pieces #####
 camera_source = '/dev/video0'
+cam_mic = 'hw:0'
 microscope_source = '/dev/video2'
 twitch_out = 'rtmp://ingest.global-contribute.live-video.net/app/'
 channel_id = 'reakain'
@@ -95,7 +96,7 @@ def on_exit():
 # first let's do our transparency overlay bits
 in_cam = ffmpeg.input(camera_source)
 in_scope = ffmpeg.input(microscope_source)
-in_audio = in_cam.audio
+in_audio = ffmpeg.input(cam_mic, format)
 # (
 #     ffmpeg
 #     .filter_(in_cam.video,'format','gray')
@@ -125,7 +126,7 @@ v0_1 = ffmpeg.filter([in_scope.video,alpha_v1],'overlay')
 v01_text = ffmpeg.overlay(in_cam.video,ffmpeg.input(msg_frame))
 
 #stream = ffmpeg.output(in_audio, v01_text,out_stream)
-stream = ffmpeg.output(v01_text,out_stream, format='flv', flvflags='no_duration_filesize',vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', framerate=30)
+stream = ffmpeg.output(in_audio, v01_text,out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', framerate=30)
 twitches = ffmpeg.run_async(stream, pipe_stdout=True)
 
 #ffmpeg.view(stream)
