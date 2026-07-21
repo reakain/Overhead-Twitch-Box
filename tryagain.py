@@ -84,7 +84,7 @@ def draw_overlay(formatted_text):
 def update_text_overlay(message):
     # TODO: update our list of on-screen messages
     # Then we call the command to remake our overlay text
-    draw_overlay(message)
+    #draw_overlay(message)
     print(message)
 
 #on exit:
