@@ -114,15 +114,15 @@ v01_text = ffmpeg.overlay(v0_1,ffmpeg.input(msg_frame))
 
 #stream = ffmpeg.output(in_audio, v01_text,out_stream)
 stream = ffmpeg.output(v01_text,out_stream)
-#ffmpeg.run_async(stream, pipe_stdout=True)
+ffmpeg.run_async(stream, pipe_stdout=True)
 
-ffmpeg.view(stream)
+#ffmpeg.view(stream)
 
 #now that the stream is theoretically outputting to both pipe and twitch, let's kick off ffplay
-# play_proc = subprocess.Popen(['ffplay', 'PATH_TO_'],
-#                         stdin=subprocess.PIPE,
-#                         stdout=subprocess.PIPE,
-#                         )
+play_proc = subprocess.Popen(['ffplay', 'PATH_TO_'],
+                        stdin=subprocess.PIPE,
+                        stdout=subprocess.PIPE,
+                        )
 
 # create an overlay on a video with ffmpeg (for doing some twitch chat bits)
 # fout = 'output.mp4'
