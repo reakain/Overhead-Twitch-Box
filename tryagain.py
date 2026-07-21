@@ -63,17 +63,23 @@ def draw_overlay(message_info):
 
     # Define the text properties
     font = ImageFont.truetype(font_file, font_size)
-    text_color = (0, 255, 0, 255)
+    text_color = (255, 255, 255, 255)
 
     # Calculate the position to center the text
     #message_info['display-name']
     #textwrap.fill(message_info['message'],)
-    text_length = draw.textlength(message_info['message'], font)
+    full_msg = message_info['display-name'] + ': ' + message_info['message']
+    text_length = draw.textlength(full_msg, font)
     x = (image.width - text_length) / 2
     y = image.height / 2
+    msg_list.append(message_info)
 
+    draw.text((x,y), message_info['display-name'] + ': ', fill=message_info['color'], font=font)
+
+    offset_n = len(message_info['display-name']) + 2
+    offset_str = ' ' * offset_n
     # Add text to the image
-    draw.text((x, y), message_info['message'], fill=text_color, font=font)
+    draw.text((x, y), offset_str + message_info['message'], fill=text_color, font=font)
 
     image.save("new_frame.png", "PNG")
     #atomic replacement
@@ -97,7 +103,7 @@ msg_list = ['']
 msg_frame = "current_frame.png"
 # temp_img = Image.new('RGBA',(int(width/3), int(height/2)), (0,0,0,0))
 # temp_img.save(msg_frame, "PNG")
-draw_overlay({'message':'testing'})
+draw_overlay({'message':'testing','display-name':'test','color':(0,0,0,0)})
 
 ################
 
