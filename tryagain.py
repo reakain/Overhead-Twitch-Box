@@ -109,7 +109,9 @@ in_audio = ffmpeg.input(cam_mic, f='alsa')
 
 # [1:v][0:v]scale2ref[v1][v0] - Scales the fallback video to the resolution of the main input video.
 # [v0]format=gray,geq=lum_expr='lt(p(X,Y), 5)[alpha]' - Replace all pixels below the threshold 5 with the value 1, and set pixels above 5 to 0.
+
 alpha = ffmpeg.filter_(in_cam.video, 'format','gray').filter('geq','lt(p(X,Y), 5)').filter('geq','gt(lumsum(W-1,H-1),0.4*W*H)*255')
+
 # geq='gt(lumsum(W-1,H-1),0.4*W*H)*255' - Set all the pixels in the relevant frame to 255 if sum of 1 pixels above 40% of the total pixels (0.4*W*H applies 40% of total pixels).
 # If 40% of the total pixels are below 5, the [alpha] is black (all zeros).
 # If 40% or more of the total pixels are above 5, the [alpha] is white (all 255).
@@ -124,11 +126,11 @@ v0_1 = ffmpeg.filter([in_scope.video,alpha_v1],'overlay')
 
 #instead of overlay, we can just draw text with the drawtext command? but unsure about how we update the text.... i guess we can use a textfile instead. oh! we use a pipe in to pipe each frame! then use that as the overlay? (use the numpy processing example, could use pygame or something to make the text frames if we want)
 # v3 = in_cam.video.drawtext(text='twitch chat here', x=width-(width/3), y=0, fix_bounds=True)
-#v01_text = ffmpeg.overlay(v0_1,ffmpeg.input(msg_frame))
-v01_text = ffmpeg.overlay(in_cam.video,ffmpeg.input(msg_frame))
+v01_text = ffmpeg.overlay(v0_1,ffmpeg.input(msg_frame))
+#v01_text = ffmpeg.overlay(in_cam.video,ffmpeg.input(msg_frame))
 
 #stream = ffmpeg.output(in_audio, v01_text,out_stream)
-stream = ffmpeg.output(in_audio, v01_text,out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p')
+stream = ffmpeg.output(v01_text,out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p')
 twitches = ffmpeg.run_async(stream, pipe_stdout=True)
 
 #ffmpeg.view(stream)
