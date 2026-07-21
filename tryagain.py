@@ -16,7 +16,7 @@ import neopixel
 camera_source = '/dev/video2'
 microscope_source = '/dev/video0'
 twitch_out = 'rtmp://ingest.global-contribute.live-video.net/app/'
-channel_id = 'reakain'
+channel_id = 'grumlarkin'
 text_timeout = 30
 
 font_file = 'comic-mono.ttf'
@@ -24,8 +24,8 @@ font_size = 24
 #########################
 
 # Neopixel ring I had on hand, so neopixels setup using: https://learn.adafruit.com/neopixels-on-raspberry-pi/python-usage
-pixels = neopixel.NeoPixel(board.D14, 24)
-pixels.fill((0, 255, 0))
+# pixels = neopixel.NeoPixel(board.D14, 24)
+# pixels.fill((0, 255, 0))
 # Details for me! Pin numbers from https://pinout.xyz/
 # 5v power pin 4
 # gnd pin 6
