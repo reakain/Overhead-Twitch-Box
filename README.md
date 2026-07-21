@@ -37,6 +37,10 @@ As part of this, I predominantly tried to use what I had on hand, so these are b
 
 Full write up when I finish testing the setup
 
+## Software
+The system has been tested on dietpi, with their inbuilt versions of ffmpeg, alsa, and git. 
+The code
+
 
 ffmpeg stream copy stuff from [here](https://riderjensen.com/blog/streaming-mp4-to-twitch)
 

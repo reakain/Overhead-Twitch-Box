@@ -33,8 +33,8 @@ stroke_width = 1
 #########################
 
 # Neopixel ring I had on hand, so neopixels setup using: https://learn.adafruit.com/neopixels-on-raspberry-pi/python-usage
-# pixels = neopixel.NeoPixel(board.D14, 24)
-# pixels.fill((0, 255, 0))
+pixels = neopixel.NeoPixel(board.D14, 24)
+pixels.fill((0, 255, 0))
 # Details for me! Pin numbers from https://pinout.xyz/
 # 5v power pin 4
 # gnd pin 6
@@ -146,7 +146,7 @@ def on_new_message(msg_info):
 #on exit:
 def on_exit():
     connection.close()
-    #pixels.fill((0, 0, 0))
+    pixels.fill((0, 0, 0))
 
 def start_update_timer():
     text_update_timer = threading.Timer(5.0,update_text_overlay)
@@ -225,8 +225,8 @@ if __name__ == "__main__":
     #twitches.wait(1000)
     try:
         connection.listen('reakain', on_message=on_new_message)
-        # pixels.fill((0, 0, 0))
     except:
+        pixels.fill((0, 0, 0))
         pass
     finally:
         on_exit()
