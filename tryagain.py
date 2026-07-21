@@ -8,6 +8,9 @@ from twitch_chat_irc import twitch_chat_irc
 from PIL import Image, ImageDraw, ImageFont
 # we're gonna use pillow for making our text frames
 import os
+import RPi.GPIO as GPIO
+import board
+import neopixel
 
 ##### Config pieces #####
 camera_source = '/dev/video2'
@@ -19,6 +22,16 @@ text_timeout = 30
 font_file = 'comic-mono.ttf'
 font_size = 24
 #########################
+
+# Neopixel ring I had on hand, so neopixels setup using: https://learn.adafruit.com/neopixels-on-raspberry-pi/python-usage
+pixels = neopixel.NeoPixel(board.D14, 24)
+pixels.fill((0, 255, 0))
+# Details for me! Pin numbers from https://pinout.xyz/
+# 5v power pin 4
+# gnd pin 6
+# led pin 8 (GPIO 14)
+# btn pin 10 (GPIO 15)
+
 
 twitchk = os.getenv('TWITCHKEY')
 out_stream = twitch_out+twitchk
@@ -74,6 +87,7 @@ def update_text_overlay(new_msg):
 #on exit:
 def on_exit():
     connection.close()
+    pixels.fill((0, 0, 0))
 
 connection = twitch_chat_irc.TwitchChatIRC()
 connection.listen(channel_id, on_message=update_text_overlay)
@@ -113,7 +127,7 @@ v0_1 = ffmpeg.filter([in_scope.video,alpha_v1],'overlay')
 v01_text = ffmpeg.overlay(v0_1,ffmpeg.input(msg_frame))
 
 #stream = ffmpeg.output(in_audio, v01_text,out_stream)
-stream = ffmpeg.output(v01_text,out_stream, format='flv', flvflags='no_duration_filesize',vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000)
+stream = ffmpeg.output(v01_text,out_stream, format='flv', flvflags='no_duration_filesize',vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', framerate=30)
 twitches = ffmpeg.run_async(stream, pipe_stdout=True)
 
 #ffmpeg.view(stream)
@@ -133,7 +147,7 @@ play_proc = subprocess.Popen(['ffplay', 'pipe:0'],
 #     .run()
 # )
 twitches.wait()
-
+pixels.fill((0, 0, 0))
 
 
 
