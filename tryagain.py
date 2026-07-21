@@ -119,7 +119,7 @@ twitches = ffmpeg.run_async(stream, pipe_stdout=True)
 #ffmpeg.view(stream)
 
 #now that the stream is theoretically outputting to both pipe and twitch, let's kick off ffplay
-play_proc = subprocess.Popen(['ffplay', 'PATH_TO_'],
+play_proc = subprocess.Popen(['ffplay', 'pipe:0'],
                         stdin=subprocess.PIPE,
                         stdout=subprocess.PIPE,
                         )
