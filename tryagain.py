@@ -20,7 +20,7 @@ twitch_out = 'rtmp://ingest.global-contribute.live-video.net/app/'
 channel_id = 'reakain'
 text_timeout = 30
 
-font_file = 'comic-mono.ttf'
+font_file = 'ComicMono.ttf'
 font_size = 24
 #########################
 
