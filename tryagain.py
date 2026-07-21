@@ -98,7 +98,7 @@ def on_exit():
 # first let's do our transparency overlay bits
 in_cam = ffmpeg.input(camera_source, f='v4l2', video_size='640x480', framerate=30)
 in_scope = ffmpeg.input(microscope_source)
-in_audio = ffmpeg.input(cam_mic, f='alsa')
+#in_audio = ffmpeg.input(cam_mic, f='alsa')
 # (
 #     ffmpeg
 #     .filter_(in_cam.video,'format','gray')
@@ -130,7 +130,7 @@ v01_text = ffmpeg.overlay(v0_1,ffmpeg.input(msg_frame))
 #v01_text = ffmpeg.overlay(in_cam.video,ffmpeg.input(msg_frame))
 
 #stream = ffmpeg.output(in_audio, v01_text,out_stream)
-stream = ffmpeg.output(in_audio, v01_text,out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p')
+stream = ffmpeg.output(v01_text,out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p')
 twitches = ffmpeg.run_async(stream, pipe_stdout=True)
 
 #ffmpeg.view(stream)
