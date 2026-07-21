@@ -146,7 +146,7 @@ v0_1 = ffmpeg.filter([in_scope.video,alpha_v1],'overlay')
 # v3 = in_cam.video.drawtext(text='twitch chat here', x=width-(width/3), y=0, fix_bounds=True)
 #v01_text = ffmpeg.overlay(v0_1,ffmpeg.input(msg_frame))
 image_in = ffmpeg.input(msg_frame, stream_loop=-1)
-v01_text = ffmpeg.overlay(in_cam.video,image_in)
+v01_text = ffmpeg.overlay(in_cam.video,image_in, check_interval=200)
 
 #stream = ffmpeg.output(in_audio, v01_text,out_stream)
 stream = ffmpeg.output(in_audio, v01_text,out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p')
