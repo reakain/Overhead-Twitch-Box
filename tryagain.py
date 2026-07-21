@@ -23,12 +23,13 @@ cam_mic = 'plughw:CARD=U0x46d0x825,DEV=0'
 microscope_source = '/dev/video2'
 twitch_out = 'rtmp://ingest.global-contribute.live-video.net/app/'
 channel_id = 'reakain'
-text_timeout = 30
+text_timeout = 60
 
 font_file = 'ComicMono.ttf'
 font_size = 12
 text_color = (255, 255, 255, 255)
 stroke_color = (0, 0, 0, 255)
+stroke_width = 1
 #########################
 
 # Neopixel ring I had on hand, so neopixels setup using: https://learn.adafruit.com/neopixels-on-raspberry-pi/python-usage
@@ -43,7 +44,7 @@ stroke_color = (0, 0, 0, 255)
 
 twitchk = os.getenv('TWITCHKEY')
 out_stream = twitch_out+twitchk
-pipe_out = 'pipe:1'
+
 # get some video info:
 probe = ffmpeg.probe(camera_source)
 video_stream = next((stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
@@ -126,9 +127,9 @@ def update_text_overlay():
             if start_y < 5:
                 break
             # draw the display name
-            draw.text((start_x,start_y), display_name, fill=msg_info['color'], stroke_fill=stroke_color, stroke_width=1, font=font)
+            draw.text((start_x,start_y), display_name, fill=msg_info['color'], stroke_fill=stroke_color, stroke_width=stroke_width, font=font)
             # draw the message
-            draw.text((start_x, start_y), wrapped_msg, fill=text_color, stroke_fill=stroke_color, stroke_width=1, font=font)
+            draw.text((start_x, start_y), wrapped_msg, fill=text_color, stroke_fill=stroke_color, stroke_width=stroke_width, font=font)
             # update our starting position for the next message
             start_y = start_y - 5
             new_msg_list.append(msg_info)
@@ -138,10 +139,6 @@ def update_text_overlay():
     #atomic replacement
     os.replace("new_frame.png",msg_frame)
     start_update_timer()
-
-text_update_timer = threading.Timer(5.0,update_text_overlay)
-text_update_timer.daemon = True
-text_update_timer.start()
 
 def on_new_message(msg_info):
     msg_list.append({'time':time.time,'message':msg_info['message'],'display-name':msg_info['display-name'],'color':msg_info['color']})
@@ -167,30 +164,30 @@ def setup_ffmpeg_vid():
     in_cam = ffmpeg.input(camera_source, f='v4l2', framerate=30)
     in_scope = ffmpeg.input(microscope_source)
     in_audio = ffmpeg.input(cam_mic, f='alsa')
-    # (
-    #     ffmpeg
-    #     .filter_(in_cam.video,'format','gray')
-    #     .filter_('geq','lt(p(X,Y), 5)')
-    #     .filter_('geq','gt(lumsum(W-1,H-1),0.4*W*H)*255')
-    #     .filter_()
-    # )
+    # # (
+    # #     ffmpeg
+    # #     .filter_(in_cam.video,'format','gray')
+    # #     .filter_('geq','lt(p(X,Y), 5)')
+    # #     .filter_('geq','gt(lumsum(W-1,H-1),0.4*W*H)*255')
+    # #     .filter_()
+    # # )
 
-    # [1:v][0:v]scale2ref[v1][v0] - Scales the fallback video to the resolution of the main input video.
-    # [v0]format=gray,geq=lum_expr='lt(p(X,Y), 5)[alpha]' - Replace all pixels below the threshold 5 with the value 1, and set pixels above 5 to 0.
+    # # [1:v][0:v]scale2ref[v1][v0] - Scales the fallback video to the resolution of the main input video.
+    # # [v0]format=gray,geq=lum_expr='lt(p(X,Y), 5)[alpha]' - Replace all pixels below the threshold 5 with the value 1, and set pixels above 5 to 0.
 
-    alpha = ffmpeg.filter_(in_cam.video, 'format','gray').filter('geq','lt(p(X,Y), 5)').filter('geq','gt(lumsum(W-1,H-1),0.4*W*H)*255')
+    # alpha = ffmpeg.filter_(in_cam.video, 'format','gray').filter('geq','lt(p(X,Y), 5)').filter('geq','gt(lumsum(W-1,H-1),0.4*W*H)*255')
 
-    # geq='gt(lumsum(W-1,H-1),0.4*W*H)*255' - Set all the pixels in the relevant frame to 255 if sum of 1 pixels above 40% of the total pixels (0.4*W*H applies 40% of total pixels).
-    # If 40% of the total pixels are below 5, the [alpha] is black (all zeros).
-    # If 40% or more of the total pixels are above 5, the [alpha] is white (all 255).
-    # [v1][alpha]alphamerge[alpha_v1] - Merge [alpha] as alpha channel to the scaled fallback frame [v1].
-    alpha_v1 = ffmpeg.filter_([in_cam.video,alpha],'alphamerge')
-    # If [alpha] is black, the [alpha_v1] is fully transparent.
-    # If [alpha] is white, the [alpha_v1] is fully opaque.
-    # [0:v][alpha_v1]overlay=shortest=1[v] - Overlays [alpha_v1] on top of the main video frame.
-    # If [alpha_v1] is transparent, the main video frame is unmodified.
-    # If [alpha_v1] is opaque, the main video frame is replaced with the fallback frame.
-    v0_1 = ffmpeg.filter([in_scope.video,alpha_v1],'overlay')
+    # # geq='gt(lumsum(W-1,H-1),0.4*W*H)*255' - Set all the pixels in the relevant frame to 255 if sum of 1 pixels above 40% of the total pixels (0.4*W*H applies 40% of total pixels).
+    # # If 40% of the total pixels are below 5, the [alpha] is black (all zeros).
+    # # If 40% or more of the total pixels are above 5, the [alpha] is white (all 255).
+    # # [v1][alpha]alphamerge[alpha_v1] - Merge [alpha] as alpha channel to the scaled fallback frame [v1].
+    # alpha_v1 = ffmpeg.filter_([in_cam.video,alpha],'alphamerge')
+    # # If [alpha] is black, the [alpha_v1] is fully transparent.
+    # # If [alpha] is white, the [alpha_v1] is fully opaque.
+    # # [0:v][alpha_v1]overlay=shortest=1[v] - Overlays [alpha_v1] on top of the main video frame.
+    # # If [alpha_v1] is transparent, the main video frame is unmodified.
+    # # If [alpha_v1] is opaque, the main video frame is replaced with the fallback frame.
+    # v0_1 = ffmpeg.filter([in_scope.video,alpha_v1],'overlay')
 
     #instead of overlay, we can just draw text with the drawtext command? but unsure about how we update the text.... i guess we can use a textfile instead. oh! we use a pipe in to pipe each frame! then use that as the overlay? (use the numpy processing example, could use pygame or something to make the text frames if we want)
     # v3 = in_cam.video.drawtext(text='twitch chat here', x=width-(width/3), y=0, fix_bounds=True)
@@ -199,7 +196,10 @@ def setup_ffmpeg_vid():
     #img_set = ffmpeg.filter_(image_in.video,'setpts','PTS-STARTPTS')
     #vid_set = ffmpeg.filter_(in_cam.video,'setpts','PTS-STARTPTS')
     #v01_text = ffmpeg.overlay(vid_set,img_set)
-    v01_text = ffmpeg.overlay(in_cam.video,image_in.video).split()
+    v0_alpha = ffmpeg.filter_(in_cam.video, 'colorkey', color='black', similarity=0.01')
+    v01 = ffmpeg.overlay(in_scope.video, v0_alpha)
+
+    v01_text = ffmpeg.overlay(v01,image_in.video).split()
     stdout_stream = ffmpeg.output(v01_text[0],'udp://127.0.0.1:5000', format='flv', flvflags='no_duration_filesize',vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p')
 
     #stream = ffmpeg.output(in_audio, v01_text,out_stream)
@@ -210,6 +210,12 @@ def setup_ffmpeg_vid():
     #ffmpeg.view(stream)
 
 if __name__ == "__main__":
+    setup_ffmpeg_vid()
+
+    text_update_timer = threading.Timer(5.0,update_text_overlay)
+    text_update_timer.daemon = True
+    text_update_timer.start()
+
     #now that the stream is theoretically outputting to both pipe and twitch, let's kick off ffplay
     play_proc = subprocess.Popen(['ffplay', '-i', 'udp://127.0.0.1:5000'],
                             stdin=subprocess.PIPE,
