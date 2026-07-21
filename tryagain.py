@@ -22,7 +22,7 @@ channel_id = 'reakain'
 text_timeout = 30
 
 font_file = 'ComicMono.ttf'
-font_size = 20
+font_size = 12
 #########################
 
 # Neopixel ring I had on hand, so neopixels setup using: https://learn.adafruit.com/neopixels-on-raspberry-pi/python-usage
@@ -76,8 +76,8 @@ def draw_overlay(message_info):
 
     text_length = draw.textlength(full_msg, font)
     #x = (image.width - text_length) / 2
-    x = 5
-    y = int(image.height / 6)
+    x = 10
+    y = 10
     msg_list.append(message_info)
 
     draw.text((x,y), message_info['display-name'] + ': ', fill=message_info['color'], font=font)
