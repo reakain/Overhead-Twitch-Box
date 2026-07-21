@@ -151,7 +151,7 @@ play_proc = subprocess.Popen(['ffplay', 'pipe:'],
 # )
 #twitches.wait(1000)
 connection = twitch_chat_irc.TwitchChatIRC()
-connection.listen(channel_id, on_message=update_text_overlay)
+connection.listen('reakain', on_message=update_text_overlay)
 # pixels.fill((0, 0, 0))
 
 
