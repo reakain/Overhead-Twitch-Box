@@ -130,7 +130,7 @@ v01_text = ffmpeg.overlay(v0_1,ffmpeg.input(msg_frame))
 #v01_text = ffmpeg.overlay(in_cam.video,ffmpeg.input(msg_frame))
 
 #stream = ffmpeg.output(in_audio, v01_text,out_stream)
-stream = ffmpeg.output(v01_text,out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p')
+stream = ffmpeg.output(in_audio, v01_text,out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p')
 twitches = ffmpeg.run_async(stream, pipe_stdout=True)
 
 #ffmpeg.view(stream)
