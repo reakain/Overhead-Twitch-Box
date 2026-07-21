@@ -11,6 +11,7 @@ import os
 import RPi.GPIO as GPIO
 import board
 import neopixel
+import textwrap
 
 ##### Config pieces #####
 camera_source = '/dev/video0'
@@ -59,7 +60,7 @@ temp_img.save(msg_frame, "PNG")
 
 
 #### Twitch Chat Handling
-def draw_overlay(formatted_text):
+def draw_overlay(message_info):
     image = Image.new('RGBA',(int(width/3), int(height/2)), (0,0,0,0))
 
     # Create a drawing context
@@ -70,12 +71,14 @@ def draw_overlay(formatted_text):
     text_color = (255, 255, 255)
 
     # Calculate the position to center the text
-    text_length = draw.textlength(formatted_text, font)
+    #message_info['display-name']
+    #textwrap.fill(message_info['message'],)
+    text_length = draw.textlength(message_info['message'], font)
     x = (image.width - text_length) / 2
     y = image.height / 2
 
     # Add text to the image
-    draw.text((x, y), formatted_text, fill=text_color, font=font)
+    draw.text((x, y), message_info['message'], fill=text_color, font=font)
 
     image.save("new_frame.png", "PNG")
     #atomic replacement
@@ -84,7 +87,7 @@ def draw_overlay(formatted_text):
 def update_text_overlay(message):
     # TODO: update our list of on-screen messages
     # Then we call the command to remake our overlay text
-    #draw_overlay(message)
+    draw_overlay(message)
     new_msg = message['display-name'] + message['message']
     print(new_msg)
     print(message)

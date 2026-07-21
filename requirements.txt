@@ -3,3 +3,4 @@ adafruit-circuitpython-neopixel
 adafruit-blinka
 ffmpeg-python
 twitch-chat-irc
+textwrap
