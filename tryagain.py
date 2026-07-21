@@ -22,7 +22,7 @@ channel_id = 'reakain'
 text_timeout = 30
 
 font_file = 'ComicMono.ttf'
-font_size = 24
+font_size = 20
 #########################
 
 # Neopixel ring I had on hand, so neopixels setup using: https://learn.adafruit.com/neopixels-on-raspberry-pi/python-usage
@@ -76,8 +76,8 @@ def draw_overlay(message_info):
 
     text_length = draw.textlength(full_msg, font)
     #x = (image.width - text_length) / 2
-    x = 10
-    y = int(image.height / 3)
+    x = 5
+    y = int(image.height / 6)
     msg_list.append(message_info)
 
     draw.text((x,y), message_info['display-name'] + ': ', fill=message_info['color'], font=font)
@@ -145,7 +145,7 @@ v0_1 = ffmpeg.filter([in_scope.video,alpha_v1],'overlay')
 #instead of overlay, we can just draw text with the drawtext command? but unsure about how we update the text.... i guess we can use a textfile instead. oh! we use a pipe in to pipe each frame! then use that as the overlay? (use the numpy processing example, could use pygame or something to make the text frames if we want)
 # v3 = in_cam.video.drawtext(text='twitch chat here', x=width-(width/3), y=0, fix_bounds=True)
 #v01_text = ffmpeg.overlay(v0_1,ffmpeg.input(msg_frame))
-image_in = ffmpeg.input(msg_frame, re=True)
+image_in = ffmpeg.input(msg_frame, stream_loop=-1)
 v01_text = ffmpeg.overlay(in_cam.video,image_in)
 
 #stream = ffmpeg.output(in_audio, v01_text,out_stream)
