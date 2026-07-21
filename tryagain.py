@@ -56,14 +56,14 @@ height = 480
 
 #### Twitch Chat Handling
 def draw_overlay(message_info):
-    image = Image.new('RGBA',(int(width/3), int(height/2)), (0,0,0,0))
+    image = Image.new('RGBA',(int(width/3), int(height/2)), rgba(0,0,0,0))
 
     # Create a drawing context
     draw = ImageDraw.Draw(image)
 
     # Define the text properties
     font = ImageFont.truetype(font_file, font_size)
-    text_color = (255, 255, 255, 255)
+    text_color = rgba(0, 255, 0, 255)
 
     # Calculate the position to center the text
     #message_info['display-name']
