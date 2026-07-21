@@ -45,12 +45,7 @@ pipe_out = 'pipe:1'
 width = 640
 height = 480
 
-# setup our message screen
-msg_list = ['']
-msg_frame = "current_frame.png"
-# temp_img = Image.new('RGBA',(int(width/3), int(height/2)), (0,0,0,0))
-# temp_img.save(msg_frame, "PNG")
-draw_overlay({'message':'testing'})
+
 
 
 
@@ -96,6 +91,13 @@ def update_text_overlay(message):
 def on_exit():
     connection.close()
     #pixels.fill((0, 0, 0))
+
+# setup our message screen
+msg_list = ['']
+msg_frame = "current_frame.png"
+# temp_img = Image.new('RGBA',(int(width/3), int(height/2)), (0,0,0,0))
+# temp_img.save(msg_frame, "PNG")
+draw_overlay({'message':'testing'})
 
 ################
 
