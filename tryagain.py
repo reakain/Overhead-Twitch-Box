@@ -146,7 +146,7 @@ play_proc = subprocess.Popen(['ffplay', 'pipe:0'],
 #     .output(fout)
 #     .run()
 # )
-twitches.wait()
+twitches.wait(1000)
 pixels.fill((0, 0, 0))
 
 
