@@ -150,18 +150,20 @@ image_in = ffmpeg.input(msg_frame, f='image2', pattern_type = 'none', loop=1)
 #vid_set = ffmpeg.filter_(in_cam.video,'setpts','PTS-STARTPTS')
 #v01_text = ffmpeg.overlay(vid_set,img_set)
 v01_text = ffmpeg.overlay(in_cam.video,image_in.video)
+stdout_stream = ffmpeg.output(v01_text,'udp://127.0.0.1:5000')
 
 #stream = ffmpeg.output(in_audio, v01_text,out_stream)
 stream = ffmpeg.output(in_audio, v01_text,out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p')
-twitches = ffmpeg.run_async(stream, pipe_stdout=True)
+ffmpeg.merge_outputs(stdout_stream, stream).run_async()
+#twitches = ffmpeg.run_async(stream, pipe_stdout=True)
 
 #ffmpeg.view(stream)
 
 #now that the stream is theoretically outputting to both pipe and twitch, let's kick off ffplay
-# play_proc = subprocess.Popen(['ffplay', '-i', 'pipe:0'],
-#                         stdin=subprocess.PIPE,
-#                         stdout=subprocess.PIPE,
-#                         )
+play_proc = subprocess.Popen(['ffplay', '-i', 'udp://127.0.0.1:5000'],
+                        stdin=subprocess.PIPE,
+                        stdout=subprocess.PIPE,
+                        )
 
 # create an overlay on a video with ffmpeg (for doing some twitch chat bits)
 # fout = 'output.mp4'
