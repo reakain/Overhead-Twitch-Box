@@ -14,7 +14,6 @@ def update_text_overlay(message):
 #on exit:
 def on_exit():
     connection.close()
-    pixels.fill((0, 0, 0))
 
 connection = twitch_chat_irc.TwitchChatIRC()
-connection.listen(channel_id, on_message=update_text_overlay)
+connection.listen('reakain', on_message=update_text_overlay)
