@@ -98,7 +98,7 @@ def on_exit():
 # first let's do our transparency overlay bits
 in_cam = ffmpeg.input(camera_source)
 in_scope = ffmpeg.input(microscope_source)
-in_audio = ffmpeg.input(cam_mic)
+in_audio = ffmpeg.input(cam_mic, format='alsa')
 # (
 #     ffmpeg
 #     .filter_(in_cam.video,'format','gray')
