@@ -196,7 +196,7 @@ def setup_ffmpeg_vid():
     #img_set = ffmpeg.filter_(image_in.video,'setpts','PTS-STARTPTS')
     #vid_set = ffmpeg.filter_(in_cam.video,'setpts','PTS-STARTPTS')
     #v01_text = ffmpeg.overlay(vid_set,img_set)
-    v0_alpha = ffmpeg.filter_(in_cam.video, 'colorkey', color='black', similarity=0.01')
+    v0_alpha = ffmpeg.filter_(in_cam.video, 'colorkey', color='black', similarity=0.01)
     v01 = ffmpeg.overlay(in_scope.video, v0_alpha)
 
     v01_text = ffmpeg.overlay(v01,image_in.video).split()
