@@ -14,6 +14,7 @@ import neopixel
 import textwrap
 import time
 import threading
+import copy
 
 
 
@@ -136,7 +137,7 @@ def update_text_overlay():
             # update our starting position for the next message
             start_y = start_y - 5
             new_msg_list.append(msg_info)
-    msg_list = new_msg_list.deepcopy()
+    msg_list = copy.deepcopy(new_msg_list)
 
     image.save("new_frame.png", "PNG")
     #atomic replacement
