@@ -60,7 +60,7 @@ height = int(video_stream['height'])
 
 # Load the image
 # setup our message screen
-msg_list = []
+msg_list = [{'time':time.time, 'display-name':'', 'message':'', 'color':(0,0,0,0)}]
 connection = twitch_chat_irc.TwitchChatIRC()
 msg_frame = "current_frame.png"
 chat_height = int(height/2)
@@ -114,6 +114,9 @@ def turnOnLEDS(makeOn):
 #     os.replace("new_frame.png",msg_frame)
 
 def update_text_overlay():
+    if len(msg_list) < 1:
+        start_update_timer()
+        return
     image = Image.new('RGBA',(chat_width, chat_height), (0,0,0,0))
     # Create a drawing context
     draw = ImageDraw.Draw(image)
