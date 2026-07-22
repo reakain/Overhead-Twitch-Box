@@ -106,6 +106,7 @@ def turnOnLEDS(makeOn):
 
 def update_text_overlay():
     global msg_list
+    global text_timeout
     if len(msg_list) < 1:
         start_update_timer()
         return
@@ -118,7 +119,7 @@ def update_text_overlay():
 
     new_msg_list = []
     for msg_info in msg_list[::-1]:
-        if time.time - msg_info['time'] < text_timeout:
+        if time.time() - msg_info['time'] < text_timeout:
             display_name = msg_info['display-name'] + ': '
             offset_str = ' ' * len(display_name)
             full_msg = offset_str + msg_info['message']
@@ -142,7 +143,7 @@ def update_text_overlay():
     start_update_timer()
 
 def on_new_message(msg_info):
-    msg_list.append({'time':time.time,'message':msg_info['message'],'display-name':msg_info['display-name'],'color':msg_info['color']})
+    msg_list.append({'time':time.time(),'message':msg_info['message'],'display-name':msg_info['display-name'],'color':msg_info['color']})
 
 #on exit:
 def on_exit():
@@ -212,7 +213,7 @@ def setup_ffmpeg_vid():
 
 if __name__ == "__main__":
     # setup our message screen
-    msg_list = [{'time':time.time, 'display-name':'', 'message':'', 'color':(0,0,0,0)}]
+    msg_list = [{'time':time.time(), 'display-name':'', 'message':'', 'color':(0,0,0,0)}]
     connection = twitch_chat_irc.TwitchChatIRC()
     msg_frame = "current_frame.png"
     chat_height = int(height/2)
