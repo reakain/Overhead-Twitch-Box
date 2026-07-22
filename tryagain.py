@@ -59,16 +59,7 @@ height = int(video_stream['height'])
 
 
 # Load the image
-# setup our message screen
-msg_list = [{'time':time.time, 'display-name':'', 'message':'', 'color':(0,0,0,0)}]
-connection = twitch_chat_irc.TwitchChatIRC()
-msg_frame = "current_frame.png"
-chat_height = int(height/2)
-chat_width = int(width/3)
-temp_img = Image.new('RGBA',(chat_width, chat_height), (0,0,0,0))
-temp_img.save(msg_frame, "PNG")
-# Define the text properties
-font = ImageFont.truetype(font_file, font_size)
+
 
 
 def turnOnLEDS(makeOn):
@@ -219,6 +210,16 @@ def setup_ffmpeg_vid():
     #ffmpeg.view(stream)
 
 if __name__ == "__main__":
+    # setup our message screen
+    msg_list = [{'time':time.time, 'display-name':'', 'message':'', 'color':(0,0,0,0)}]
+    connection = twitch_chat_irc.TwitchChatIRC()
+    msg_frame = "current_frame.png"
+    chat_height = int(height/2)
+    chat_width = int(width/3)
+    temp_img = Image.new('RGBA',(chat_width, chat_height), (0,0,0,0))
+    temp_img.save(msg_frame, "PNG")
+    # Define the text properties
+    font = ImageFont.truetype(font_file, font_size)
     setup_ffmpeg_vid()
 
     text_update_timer = threading.Timer(5.0,update_text_overlay)
