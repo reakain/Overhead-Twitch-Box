@@ -34,7 +34,9 @@ stroke_width = 1
 #########################
 
 # Neopixel ring I had on hand, so neopixels setup using: https://learn.adafruit.com/neopixels-on-raspberry-pi/python-usage
-pixels = neopixel.NeoPixel(board.D8, 24)
+# Apparently I need to use GPIO 12, specifically? https://github.com/jgarff/rpi_ws281x#gpio-usage
+# which is physical pin 32
+pixels = neopixel.NeoPixel(board.D12, 24)
 
 
 # Details for me! Pin numbers from https://pinout.xyz/
@@ -63,7 +65,7 @@ height = int(video_stream['height'])
 
 
 
-def turnOnLEDS(makeOn):
+def turnOnLEDS(makeOn: bool):
     if makeOn:
         pixels.fill((0, 255, 0))
     else:
@@ -155,6 +157,7 @@ def on_new_message(msg_info):
 #on exit:
 def on_exit():
     connection.close()
+    turnOnLEDS(False)
     
 
 def start_update_timer():
@@ -222,6 +225,7 @@ if __name__ == "__main__":
     # setup our message screen
     msg_list = [{'time':time.time(), 'display-name':'', 'message':'', 'color':(0,0,0,0)}]
     connection = twitch_chat_irc.TwitchChatIRC()
+    turnOnLEDS(True)
     msg_frame = "current_frame.png"
     chat_height = int(height/2)
     chat_width = int(width/3)
@@ -233,6 +237,7 @@ if __name__ == "__main__":
     num_chars = int((chat_width - 8)/text_wid)
     print(num_chars)
     setup_ffmpeg_vid()
+    
 
     text_update_timer = threading.Timer(5.0,update_text_overlay)
     text_update_timer.daemon = True
