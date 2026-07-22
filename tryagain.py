@@ -125,7 +125,7 @@ def update_text_overlay():
             offset_str = ' ' * len(display_name)
             full_msg = offset_str + msg_info['message']
             wrapped_msg = textwrap.fill(full_msg, width=40)
-            font_width, font_height = font.getsize(wrapped_msg)
+            (font_width, font_height), (offset_x, offset_y) = font.font.getsize(wrapped_msg)
             start_y = start_y - font_height
             if start_y < 5:
                 break
