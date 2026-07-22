@@ -107,6 +107,7 @@ def turnOnLEDS(makeOn):
 def update_text_overlay():
     global msg_list
     global text_timeout
+    global font
     if len(msg_list) < 1:
         start_update_timer()
         return
