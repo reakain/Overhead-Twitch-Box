@@ -229,7 +229,7 @@ if __name__ == "__main__":
     temp_img.save(msg_frame, "PNG")
     # Define the text properties
     font = ImageFont.truetype(font_file, font_size)
-    text_wid = font.textlength('a')
+    text_wid = font.getlength('a')
     num_chars = int((chat_width - 8)/text_wid)
     print(num_chars)
     setup_ffmpeg_vid()
