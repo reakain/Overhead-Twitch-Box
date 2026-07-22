@@ -70,6 +70,7 @@ def turnOnLEDS(makeOn: bool):
         pixels.fill((0, 255, 0))
     else:
         pixels.fill((0, 0, 0))
+    pixels.show()
 
 #### Twitch Chat Handling
 # def draw_overlay(message_info):
@@ -156,7 +157,7 @@ def on_new_message(msg_info):
 
 #on exit:
 def on_exit():
-    connection.close()
+    connection.close_connection()
     turnOnLEDS(False)
     
 
