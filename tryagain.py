@@ -115,9 +115,11 @@ def update_text_overlay():
     image = Image.new('RGBA',(chat_width, chat_height), (0,0,0,0))
     # Create a drawing context
     draw = ImageDraw.Draw(image)
+    
 
     start_x = 8
     start_y = chat_height-8
+    
 
     new_msg_list = []
     for msg_info in msg_list[::-1]:
@@ -125,7 +127,7 @@ def update_text_overlay():
             display_name = msg_info['display-name'] + ': '
             offset_str = ' ' * len(display_name)
             full_msg = offset_str + msg_info['message']
-            wrapped_msg = textwrap.fill(full_msg, width=40)
+            wrapped_msg = textwrap.fill(full_msg, width=num_chars)
             (font_width, font_height), (offset_x, offset_y) = font.font.getsize(wrapped_msg)
             start_y = start_y - font_height
             if start_y < 5:
@@ -137,7 +139,10 @@ def update_text_overlay():
             # update our starting position for the next message
             start_y = start_y - 5
             new_msg_list.append(msg_info)
-    msg_list = copy.deepcopy(new_msg_list)
+    msg_list = []
+    for msg_info in new_msg_list[::-1]:
+        msg_list.append(msg_info)
+    #msg_list = copy.deepcopy(new_msg_list)
 
     image.save("new_frame.png", "PNG")
     #atomic replacement
@@ -224,6 +229,9 @@ if __name__ == "__main__":
     temp_img.save(msg_frame, "PNG")
     # Define the text properties
     font = ImageFont.truetype(font_file, font_size)
+    text_wid = font.textlength('a')
+    num_chars = int((chat_width - 8)/text_wid)
+    print(num_chars)
     setup_ffmpeg_vid()
 
     text_update_timer = threading.Timer(5.0,update_text_overlay)
