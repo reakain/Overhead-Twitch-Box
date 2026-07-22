@@ -105,6 +105,7 @@ def turnOnLEDS(makeOn):
 #     os.replace("new_frame.png",msg_frame)
 
 def update_text_overlay():
+    global msg_list
     if len(msg_list) < 1:
         start_update_timer()
         return
