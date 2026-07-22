@@ -136,7 +136,7 @@ def update_text_overlay():
             # update our starting position for the next message
             start_y = start_y - 5
             new_msg_list.append(msg_info)
-    msg_list = new_msg_list.clone()
+    msg_list = new_msg_list.deepcopy()
 
     image.save("new_frame.png", "PNG")
     #atomic replacement
