@@ -25,7 +25,7 @@ microscope_source = '/dev/video2'
 twitch_out = 'rtmp://ingest.global-contribute.live-video.net/app/'
 channel_id = 'reakain'
 text_timeout = 60
-local_strem = 'rtp://127.0.0.1:1234'
+local_strem = 'udp://127.0.0.1:1234'
 
 font_file = 'ComicMono.ttf'
 font_size = 12
@@ -218,11 +218,11 @@ def setup_ffmpeg_vid():
 
     # single_encode_stream = ffmpeg.output(in_audio, v01_text[1])
 
-    stdout_stream = ffmpeg.output(v01_text[0],local_strem, format='rtp', flvflags='no_duration_filesize',codec = "copy", tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', fflags='nobuffer', flags='low_delay')
+    stdout_stream = ffmpeg.output(v01_text[0],local_strem, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', fflags='nobuffer', flags='low_delay')
 
     #stream = ffmpeg.output(in_audio, v01_text,out_stream)
     stream = ffmpeg.output(in_audio, v01_text[1],out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', fflags='nobuffer', flags='low_delay')
-    ffmpeg.merge_outputs(stdout_stream, stream).run_async()
+    ffmpeg.merge_outputs(stdout_stream, stream).compile()
     # twitches = ffmpeg.run_async(stream)
 
     # repeat_to_twitch = (
@@ -262,10 +262,10 @@ if __name__ == "__main__":
     text_update_timer.start()
 
     #now that the stream is theoretically outputting to both pipe and twitch, let's kick off ffplay
-    play_proc = subprocess.Popen(['ffplay','-i', local_strem],
-                            stdin=subprocess.PIPE,
-                            stdout=subprocess.PIPE,
-                            )
+    # play_proc = subprocess.Popen(['ffplay','-i', local_strem],
+    #                         stdin=subprocess.PIPE,
+    #                         stdout=subprocess.PIPE,
+    #                         )
 
     # play_proc = subprocess.Popen(['mplayer','udp://127.0.0.1:5000',])
 
