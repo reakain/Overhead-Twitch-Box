@@ -25,6 +25,7 @@ microscope_source = '/dev/video2'
 twitch_out = 'rtmp://ingest.global-contribute.live-video.net/app/'
 channel_id = 'reakain'
 text_timeout = 60
+local_strem = "tcp://127.0.0.1:2000"
 
 font_file = 'ComicMono.ttf'
 font_size = 12
@@ -220,9 +221,22 @@ def setup_ffmpeg_vid():
     # stdout_stream = ffmpeg.output(v01_text[0],'udp://127.0.0.1:5000', format='flv', flvflags='no_duration_filesize',vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', fflags='nobuffer', flags='low_delay')
 
     #stream = ffmpeg.output(in_audio, v01_text,out_stream)
-    stream = ffmpeg.output(in_audio, v01_text[1],out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', listen=1, tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', fflags='nobuffer', flags='low_delay')
+    stream = ffmpeg.output(in_audio, v01_text[1],local_strem, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', fflags='nobuffer', flags='low_delay')
     # ffmpeg.merge_outputs(stdout_stream, stream).run_async()
     twitches = ffmpeg.run_async(stream, pipe_stdout=True)
+
+    repeat_to_twitch = (
+        ffmpeg
+        .input(local_strem)
+        .output(
+            out_stream,
+            codec = "copy",
+            listen=1,
+            f='flv'
+        )
+        .run_async()
+    )
+
 
     #ffmpeg.view(stream)
 
@@ -249,7 +263,7 @@ if __name__ == "__main__":
     text_update_timer.start()
 
     #now that the stream is theoretically outputting to both pipe and twitch, let's kick off ffplay
-    play_proc = subprocess.Popen(['ffplay', '-i', out_stream],
+    play_proc = subprocess.Popen(['ffplay', '-i', local_strem],
                             stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE,
                             )
