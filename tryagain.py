@@ -227,7 +227,7 @@ def setup_ffmpeg_vid():
 
     repeat_to_twitch = (
         ffmpeg
-        .input(local_strem'?tcp')
+        .input(local_strem+'?tcp')
         .output(
             out_stream,
             codec = "copy",
