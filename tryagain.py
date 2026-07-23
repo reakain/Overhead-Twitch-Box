@@ -32,6 +32,7 @@ text_color = (255, 255, 255, 255)
 stroke_color = (0, 0, 0, 255)
 stroke_width = 1
 chat_box_margin = 5
+chat_line_margin = 1
 #########################
 
 # Neopixel ring I had on hand, so neopixels setup using: https://learn.adafruit.com/neopixels-on-raspberry-pi/python-usage
@@ -124,12 +125,17 @@ def update_text_overlay():
             offset_str = ' ' * len(display_name)
             full_msg = offset_str + msg_info['message']
             multi_wrap = textwrap.wrap(full_msg, width=num_chars)
+            line_heights = [
+                font.getmask(text_line).getbbox()[3] + descent + chat_line_margin
+                for text_line in multi_wrap
+            ]
             wrapped_msg = "\n".join(multi_wrap)
             # wrapped_msg = textwrap.fill(full_msg, width=num_chars)
             # (left, top, right, bottom) = font.getbbox(wrapped_msg)
             #(font_width, font_height), (offset_x, offset_y) = font.font.getsize(wrapped_msg)
             #start_y = start_y - font_height
-            start_y = start_y - ((font_size+int(chat_box_margin/4))*len(multi_wrap))
+            #start_y = start_y - ((font_size+int(chat_box_margin/4))*len(multi_wrap))
+            start_y = start_y - sum(line_heights)
             if start_y < chat_box_margin:
                 break
             # draw the display name
@@ -208,12 +214,15 @@ def setup_ffmpeg_vid():
     v01 = ffmpeg.overlay(in_scope.video, v0_alpha)
 
     v01_text = ffmpeg.overlay(v01,image_in.video).split()
-    stdout_stream = ffmpeg.output(v01_text[0],'udp://127.0.0.1:5000', format='flv', flvflags='no_duration_filesize',vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', fflags='nobuffer', flags='low_delay')
+
+    # single_encode_stream = ffmpeg.output(in_audio, v01_text[1])
+
+    # stdout_stream = ffmpeg.output(v01_text[0],'udp://127.0.0.1:5000', format='flv', flvflags='no_duration_filesize',vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', fflags='nobuffer', flags='low_delay')
 
     #stream = ffmpeg.output(in_audio, v01_text,out_stream)
     stream = ffmpeg.output(in_audio, v01_text[1],out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', fflags='nobuffer', flags='low_delay')
-    ffmpeg.merge_outputs(stdout_stream, stream).run_async()
-    #twitches = ffmpeg.run_async(stream, pipe_stdout=True)
+    # ffmpeg.merge_outputs(stdout_stream, stream).run_async()
+    twitches = ffmpeg.run_async(stream, pipe_stdout=True)
 
     #ffmpeg.view(stream)
 
@@ -229,6 +238,7 @@ if __name__ == "__main__":
     temp_img.save(msg_frame, "PNG")
     # Define the text properties
     font = ImageFont.truetype(font_file, font_size)
+    ascent, descent = font.getmetrics()
     text_wid = font.getlength('a')
     num_chars = int((chat_width - chat_box_margin)/text_wid)
     setup_ffmpeg_vid()
@@ -239,7 +249,7 @@ if __name__ == "__main__":
     text_update_timer.start()
 
     #now that the stream is theoretically outputting to both pipe and twitch, let's kick off ffplay
-    play_proc = subprocess.Popen(['ffplay', '-i', 'udp://127.0.0.1:5000', '-max_delay',0,'-c:v', 'copy'],
+    play_proc = subprocess.Popen(['ffplay', '-i', out_stream],
                             stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE,
                             )
