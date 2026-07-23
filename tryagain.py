@@ -255,7 +255,9 @@ if __name__ == "__main__":
     ascent, descent = font.getmetrics()
     text_wid = font.getlength('a')
     num_chars = int((chat_width - chat_box_margin)/text_wid)
-    setup_ffmpeg_vid()
+    # setup_ffmpeg_vid()
+
+    stream_proc = subprocess.Popen(['ffmpeg', '-i', microscope_source, '-f', 'v4l2', '-framerate', '30', '-i', camera_source, '-f', 'image2', '-loop', '1', '-pattern_type', 'none', '-i', msg_frame, '-f', 'alsa', '-i', cam_mic, '-filter_complex', '[1:v]colorkey=color=black:similarity=0.01[s0];[0:v][s0]overlay=eof_action=repeat[s1];[s1][2:v]overlay=eof_action=repeat[s2]', '-b:v', '4500000', '-acodec', 'aac', '-fflags', 'nobuffer', '-flags', 'low_delay', '-flvflags', 'no_duration_filesize', '-pix_fmt', 'yuv420p', '-tune', 'zerolatency', '-vcodec', 'libx264', '-preset', 'ultrafast', '-f', 'tee', '-map', 's2', '-map', '0:a', "pipe:|[f=flv]"+out_stream])
     
 
     text_update_timer = threading.Timer(5.0,update_text_overlay)
@@ -263,10 +265,10 @@ if __name__ == "__main__":
     text_update_timer.start()
 
     #now that the stream is theoretically outputting to both pipe and twitch, let's kick off ffplay
-    # play_proc = subprocess.Popen(['ffplay','-i', local_strem],
-    #                         stdin=subprocess.PIPE,
-    #                         stdout=subprocess.PIPE,
-    #                         )
+    play_proc = subprocess.Popen(['ffplay','-i', 'pipe:'],
+                            stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE,
+                            )
 
     # play_proc = subprocess.Popen(['mplayer','udp://127.0.0.1:5000',])
 
