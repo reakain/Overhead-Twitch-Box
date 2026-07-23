@@ -222,7 +222,8 @@ def setup_ffmpeg_vid():
 
     #stream = ffmpeg.output(in_audio, v01_text,out_stream)
     stream = ffmpeg.output(in_audio, v01_text[1],out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', fflags='nobuffer', flags='low_delay')
-    ffmpeg.merge_outputs(stdout_stream, stream).compile()
+    
+    print(ffmpeg.merge_outputs(stdout_stream, stream).compile())
     # twitches = ffmpeg.run_async(stream)
 
     # repeat_to_twitch = (
