@@ -257,7 +257,7 @@ if __name__ == "__main__":
     num_chars = int((chat_width - chat_box_margin)/text_wid)
     # setup_ffmpeg_vid()
 
-    stream_proc = subprocess.Popen(['ffmpeg', '-i', microscope_source, '-f', 'v4l2', '-framerate', '30', '-i', camera_source, '-f', 'image2', '-loop', '1', '-pattern_type', 'none', '-i', msg_frame, '-f', 'alsa', '-i', cam_mic, '-filter_complex', '[1:v]colorkey=color=black:similarity=0.01[s0];[0:v][s0]overlay=eof_action=repeat[s1];[s1][2:v]overlay=eof_action=repeat[s2]', '-f', 'tee', '-map', '[s2]', '-map', '2:a', '-b:v', '4500000', '-acodec', 'aac', '-fflags', 'nobuffer', '-flags', 'low_delay', '-flvflags', 'no_duration_filesize', '-pix_fmt', 'yuv420p', '-tune', 'zerolatency', '-vcodec', 'libx264', '-preset', 'ultrafast', "pipe:|[f=flv]"+out_stream])
+    stream_proc = subprocess.Popen(['ffmpeg', '-i', microscope_source, '-f', 'v4l2', '-framerate', '30', '-i', camera_source, '-f', 'image2', '-loop', '1', '-pattern_type', 'none', '-i', msg_frame, '-f', 'alsa', '-i', cam_mic, '-filter_complex', '[1:v]colorkey=color=black:similarity=0.01[s0];[0:v][s0]overlay=eof_action=repeat[s1];[s1][2:v]overlay=eof_action=repeat[s2]', '-f', 'tee', '-map', '[s2]', '-map', '3', '-b:v', '4500000', '-acodec', 'aac', '-fflags', 'nobuffer', '-flags', 'low_delay', '-flvflags', 'no_duration_filesize', '-pix_fmt', 'yuv420p', '-tune', 'zerolatency', '-vcodec', 'libx264', '-preset', 'ultrafast', "pipe:1|[f=flv]"+out_stream])
     
 
     text_update_timer = threading.Timer(5.0,update_text_overlay)
