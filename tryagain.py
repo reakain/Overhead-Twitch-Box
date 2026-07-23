@@ -208,10 +208,10 @@ def setup_ffmpeg_vid():
     v01 = ffmpeg.overlay(in_scope.video, v0_alpha)
 
     v01_text = ffmpeg.overlay(v01,image_in.video).split()
-    stdout_stream = ffmpeg.output(v01_text[0],'udp://127.0.0.1:5000', format='flv', flvflags='no_duration_filesize',vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p')
+    stdout_stream = ffmpeg.output(v01_text[0],'udp://127.0.0.1:5000', format='flv', flvflags='no_duration_filesize',vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', fflags='nobuffer', flags='low_delay')
 
     #stream = ffmpeg.output(in_audio, v01_text,out_stream)
-    stream = ffmpeg.output(in_audio, v01_text[1],out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p')
+    stream = ffmpeg.output(in_audio, v01_text[1],out_stream, format='flv', flvflags='no_duration_filesize',acodec='aac', vcodec='libx264', preset='ultrafast', tune='zerolatency', video_bitrate=4500000, pix_fmt='yuv420p', fflags='nobuffer', flags='low_delay')
     ffmpeg.merge_outputs(stdout_stream, stream).run_async()
     #twitches = ffmpeg.run_async(stream, pipe_stdout=True)
 
@@ -239,10 +239,12 @@ if __name__ == "__main__":
     text_update_timer.start()
 
     #now that the stream is theoretically outputting to both pipe and twitch, let's kick off ffplay
-    play_proc = subprocess.Popen(['ffplay', '-i', 'udp://127.0.0.1:5000'],
+    play_proc = subprocess.Popen(['ffplay', '-i', 'udp://127.0.0.1:5000', '-max_delay',0,'-c:v', 'copy'],
                             stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE,
                             )
+
+    # play_proc = subprocess.Popen(['mplayer','udp://127.0.0.1:5000',])
 
     #twitches.wait(1000)
     try:
