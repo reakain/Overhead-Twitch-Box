@@ -34,16 +34,8 @@ stroke_width = 1
 #########################
 
 # Neopixel ring I had on hand, so neopixels setup using: https://learn.adafruit.com/neopixels-on-raspberry-pi/python-usage
-# Apparently I need to use GPIO 12, specifically? https://github.com/jgarff/rpi_ws281x#gpio-usage
-# which is physical pin 32
-pixels = neopixel.NeoPixel(board.D12, 24)
-
-
-# Details for me! Pin numbers from https://pinout.xyz/
-# 5v power pin 4
-# gnd pin 6
-# led pin 8 (GPIO 14)
-# btn pin 10 (GPIO 15)
+# Apparently I need to use GPIO 12 or 18, specifically? https://github.com/jgarff/rpi_ws281x#gpio-usage
+pixels = neopixel.NeoPixel(board.D12, 24, brightness=0.2, auto_write=False, pixel_order=neopixel.GRB)
 
 
 twitchk = os.getenv('TWITCHKEY')
@@ -67,7 +59,7 @@ height = int(video_stream['height'])
 
 def turnOnLEDS(makeOn: bool):
     if makeOn:
-        pixels.fill((0, 255, 0))
+        pixels.fill((255, 255, 255))
     else:
         pixels.fill((0, 0, 0))
     pixels.show()
@@ -130,9 +122,13 @@ def update_text_overlay():
             display_name = msg_info['display-name'] + ': '
             offset_str = ' ' * len(display_name)
             full_msg = offset_str + msg_info['message']
+            #multi_wrap = textwrap.wrap(full_msg, width=num_chars)
+            #wrapped_msg = "\n".join(multi_wrap)
             wrapped_msg = textwrap.fill(full_msg, width=num_chars)
-            (font_width, font_height), (offset_x, offset_y) = font.font.getsize(wrapped_msg)
-            start_y = start_y - font_height
+            (left, top, right, bottom) = font.getbbox(wrapped_msg)
+            #(font_width, font_height), (offset_x, offset_y) = font.font.getsize(wrapped_msg)
+            #start_y = start_y - font_height
+            start_y = start_y - (bottom-top)
             if start_y < 5:
                 break
             # draw the display name
@@ -165,8 +161,6 @@ def start_update_timer():
     text_update_timer = threading.Timer(5.0,update_text_overlay)
     text_update_timer.daemon = True
     text_update_timer.start()
-
-# draw_overlay({'message':'','display-name':'','color':(0,0,0,0)})
 
 
 ################
@@ -236,7 +230,6 @@ if __name__ == "__main__":
     font = ImageFont.truetype(font_file, font_size)
     text_wid = font.getlength('a')
     num_chars = int((chat_width - 8)/text_wid)
-    print(num_chars)
     setup_ffmpeg_vid()
     
 
