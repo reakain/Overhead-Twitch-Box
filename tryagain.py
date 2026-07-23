@@ -31,6 +31,7 @@ font_size = 12
 text_color = (255, 255, 255, 255)
 stroke_color = (0, 0, 0, 255)
 stroke_width = 1
+chat_box_margin = 5
 #########################
 
 # Neopixel ring I had on hand, so neopixels setup using: https://learn.adafruit.com/neopixels-on-raspberry-pi/python-usage
@@ -112,8 +113,8 @@ def update_text_overlay():
     draw = ImageDraw.Draw(image)
     
 
-    start_x = 8
-    start_y = chat_height-8
+    start_x = chat_box_margin
+    start_y = chat_height-chat_box_margin
     
 
     new_msg_list = []
@@ -122,14 +123,14 @@ def update_text_overlay():
             display_name = msg_info['display-name'] + ': '
             offset_str = ' ' * len(display_name)
             full_msg = offset_str + msg_info['message']
-            #multi_wrap = textwrap.wrap(full_msg, width=num_chars)
-            #wrapped_msg = "\n".join(multi_wrap)
-            wrapped_msg = textwrap.fill(full_msg, width=num_chars)
-            (left, top, right, bottom) = font.getbbox(wrapped_msg)
+            multi_wrap = textwrap.wrap(full_msg, width=num_chars)
+            wrapped_msg = "\n".join(multi_wrap)
+            # wrapped_msg = textwrap.fill(full_msg, width=num_chars)
+            # (left, top, right, bottom) = font.getbbox(wrapped_msg)
             #(font_width, font_height), (offset_x, offset_y) = font.font.getsize(wrapped_msg)
             #start_y = start_y - font_height
-            start_y = start_y - (bottom-top)
-            if start_y < 5:
+            start_y = start_y - ((font_size+int(chat_box_margin/4))*len(multi_wrap))
+            if start_y < chat_box_margin:
                 break
             # draw the display name
             draw.text((start_x,start_y), display_name, fill=msg_info['color'], stroke_fill=stroke_color, stroke_width=stroke_width, font=font)
@@ -229,7 +230,7 @@ if __name__ == "__main__":
     # Define the text properties
     font = ImageFont.truetype(font_file, font_size)
     text_wid = font.getlength('a')
-    num_chars = int((chat_width - 8)/text_wid)
+    num_chars = int((chat_width - chat_box_margin)/text_wid)
     setup_ffmpeg_vid()
     
 
