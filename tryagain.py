@@ -36,9 +36,17 @@ chat_box_margin = 5
 chat_line_margin = 1
 #########################
 
+### Setup GPIO Controls
+btn_pin = 14
+GPIO.setmode(GPIO.BCM)
+# Button GPIO Setup
+GPIO.setup(btn_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 # Neopixel ring I had on hand, so neopixels setup using: https://learn.adafruit.com/neopixels-on-raspberry-pi/python-usage
 # Apparently I need to use GPIO 12 or 18, specifically? https://github.com/jgarff/rpi_ws281x#gpio-usage
 pixels = neopixel.NeoPixel(board.D12, 24, brightness=0.2, auto_write=False, pixel_order=neopixel.GRB)
+
+record_state = False
+
 
 
 twitchk = os.getenv('TWITCHKEY')
@@ -110,6 +118,9 @@ def update_text_overlay():
     if len(msg_list) < 1:
         start_update_timer()
         return
+    if not record_state:
+        start_update_timer()
+        return
     image = Image.new('RGBA',(chat_width, chat_height), (0,0,0,0))
     # Create a drawing context
     draw = ImageDraw.Draw(image)
@@ -170,6 +181,22 @@ def start_update_timer():
     text_update_timer.daemon = True
     text_update_timer.start()
 
+def check_record_state_():
+    global record_state
+    if GPIO.input(btn_pin) != record_state:
+        record_state = GPIO.input(btn_pin)
+        if record_state:
+            stream_proc.resume()
+            play_proc.resume()
+        else:
+            stream_proc.suspend()
+            play_proc.suspend()
+    start_record_timer()
+
+def start_record_timer():
+    check_btn_timer = threading.Timer(5.0,check_record_state_)
+    check_btn_timer.daemon = True
+    check_btn_timer.start()
 
 ################
 
@@ -257,12 +284,17 @@ if __name__ == "__main__":
     num_chars = int((chat_width - chat_box_margin)/text_wid)
     # setup_ffmpeg_vid()
 
+    # text_update_timer = threading.Timer(5.0,update_text_overlay)
+    # text_update_timer.daemon = True
+    # text_update_timer.start()
+    # Start our draw call and btn check timers
+    start_update_timer()
+    start_record_timer()
+
     stream_proc = subprocess.Popen(['ffmpeg', '-i', microscope_source, '-f', 'v4l2', '-framerate', '30', '-i', camera_source, '-f', 'image2', '-loop', '1', '-pattern_type', 'none', '-i', msg_frame, '-f', 'alsa', '-i', cam_mic, '-filter_complex', '[1:v]colorkey=color=black:similarity=0.01[s0];[0:v][s0]overlay=eof_action=repeat[s1];[s1][2:v]overlay=eof_action=repeat[s2]', '-f', 'tee', '-map', '[s2]', '-map', '3', '-use_fifo', '1', '-b:v', '4500000', '-acodec', 'aac', '-fflags', 'nobuffer', '-flags', 'low_delay', '-flvflags', 'no_duration_filesize', '-pix_fmt', 'yuv420p', '-tune', 'zerolatency', '-vcodec', 'libx264', '-preset', 'ultrafast', "[f=flv]"+local_strem+"|[f=flv]"+out_stream])
     
 
-    text_update_timer = threading.Timer(5.0,update_text_overlay)
-    text_update_timer.daemon = True
-    text_update_timer.start()
+    
 
     #now that the stream is theoretically outputting to both pipe and twitch, let's kick off ffplay
     play_proc = subprocess.Popen(['ffplay','-i', local_strem],
